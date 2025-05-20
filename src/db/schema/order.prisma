@@ -1,0 +1,9 @@
+model Pedidos {
+    order_id Int @id @default(autoincrement())
+    order_client Int
+    status String
+    plates String
+    amount Float
+    discount_percentage Float
+    deliver_adress String
+}

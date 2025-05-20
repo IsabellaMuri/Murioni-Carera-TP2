@@ -1,0 +1,7 @@
+model Menu {
+    plate_id Int @id @default(autoincrement())
+    name String
+    description String
+    price Float
+    category String
+}

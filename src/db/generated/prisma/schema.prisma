@@ -1,0 +1,53 @@
+model Admin {
+  name     String
+  email    String @unique
+  password String
+}
+
+model Client {
+  client_number Int    @id @default(autoincrement())
+  name          String
+  email         String @unique
+  phone         Int
+  password      String
+  adress        String
+}
+
+model Menu {
+  plate_id    Int    @id @default(autoincrement())
+  name        String
+  description String
+  price       Float
+  category    String
+}
+
+model Pedidos {
+  order_id            Int    @id @default(autoincrement())
+  order_client        Int
+  status              String
+  plates              String
+  amount              Float
+  discount_percentage Float
+  deliver_adress      String
+}
+
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Table {
+  table_number Int    @id
+  status       String
+}

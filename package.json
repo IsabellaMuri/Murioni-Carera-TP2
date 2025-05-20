@@ -1,0 +1,28 @@
+{
+  "name": "murioni-carera-tp2",
+  "version": "1.0.0",
+  "description": "Desarollo de sistemas TP2",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "db:migrate": "prisma migrate dev --schema src/db/schema"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IsabellaMuri/Murioni-Carera-TP2.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/IsabellaMuri/Murioni-Carera-TP2/issues"
+  },
+  "homepage": "https://github.com/IsabellaMuri/Murioni-Carera-TP2#readme",
+  "dependencies": {
+    "@prisma/client": "^6.8.2",
+    "prisma": "^6.8.2"
+  },
+  "prisma": {
+    "schema": "src/db/schema"
+  }
+}
