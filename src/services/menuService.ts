@@ -3,7 +3,7 @@ import {  } from "@prisma/client";
 
 import { db } from "../db/db";
 
-interface CreateMenuBody {
+interface MenuBody {
   name: string
   descrition: string
   price: number //a chequear

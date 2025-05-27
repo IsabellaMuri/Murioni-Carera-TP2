@@ -3,7 +3,7 @@ import {  } from "@prisma/client";
 
 import { db } from "../db/db";
 
-interface CreateAdminBody {
+interface AdminBody {
   name: string
   email: string
   password: string
