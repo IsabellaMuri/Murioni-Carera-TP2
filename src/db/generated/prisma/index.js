@@ -152,7 +152,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "C:\\Users\\Usuario\\Desktop\\Murioni-Carera-TP2\\src\\db\\generated\\prisma",
+      "value": "/home/ubuntu/Downloads/Murioni-Carera-TP2/src/db/generated/prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -161,17 +161,16 @@ const config = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "windows",
+        "value": "debian-openssl-3.0.x",
         "native": true
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\Users\\Usuario\\Desktop\\Murioni-Carera-TP2\\src\\db\\schema\\schema.prisma",
+    "sourceFilePath": "/home/ubuntu/Downloads/Murioni-Carera-TP2/src/db/schema/schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": "../../../../.env",
-    "schemaEnvPath": "../../../../.env"
+    "rootEnvPath": null
   },
   "relativePath": "../../schema",
   "clientVersion": "6.8.2",
@@ -188,8 +187,8 @@ const config = {
       }
     }
   },
-  "inlineSchema": "model Admin {\n  name     String\n  email    String @unique\n  password String\n}\n\nmodel Client {\n  client_number Int    @id @default(autoincrement())\n  name          String\n  email         String @unique\n  phone         Int\n  password      String\n  adress        String\n}\n\nmodel Menu {\n  plate_id    Int    @id @default(autoincrement())\n  name        String\n  description String\n  price       Float\n  category    String\n}\n\nmodel Pedidos {\n  order_id            Int    @id @default(autoincrement())\n  order_client        Int\n  status              String\n  plates              String\n  amount              Float\n  discount_percentage Float\n  deliver_adress      String\n}\n\n// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"../generated/prisma\"\n}\n\ndatasource db {\n  provider = \"sqlite\"\n  url      = \"file:./dev.db\"\n}\n\nmodel Table {\n  table_number Int    @id\n  status       String\n}\n",
-  "inlineSchemaHash": "60f498d93d1045b800e57ee324c7d160a82f29b7c4825deae5a6b3722034443b",
+  "inlineSchema": "model Admin {\n  name     String\n  email    String @unique\n  password String\n}\n\nmodel Client {\n  client_number Int    @id @default(autoincrement())\n  name          String\n  email         String @unique\n  phone         Int\n  password      String\n  adress        String\n}\n\nmodel Menu {\n  plate_id    Int    @id @default(autoincrement())\n  name        String\n  description String\n  price       Float\n  category    String\n}\n\nmodel Pedidos {\n  order_id            Int    @id @default(autoincrement())\n  order_client        Int\n  status              String\n  plates              String\n  amount              Float\n  discount_percentage Float\n  deliver_adress      String\n}\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"../generated/prisma\"\n}\n\ndatasource db {\n  provider = \"sqlite\"\n  url      = \"file:./dev.db\"\n}\n\nmodel Table {\n  table_number Int    @id\n  status       String\n}\n",
+  "inlineSchemaHash": "aa5911bdbea27f2a0aff78f6cbbafe64820acf4333c494c5a12f2112eee63e26",
   "copyEngine": true
 }
 
@@ -228,8 +227,8 @@ exports.PrismaClient = PrismaClient
 Object.assign(exports, Prisma)
 
 // file annotations for bundling tools to include these files
-path.join(__dirname, "query_engine-windows.dll.node");
-path.join(process.cwd(), "src/db/generated/prisma/query_engine-windows.dll.node")
+path.join(__dirname, "libquery_engine-debian-openssl-3.0.x.so.node");
+path.join(process.cwd(), "src/db/generated/prisma/libquery_engine-debian-openssl-3.0.x.so.node")
 // file annotations for bundling tools to include these files
 path.join(__dirname, "schema.prisma");
 path.join(process.cwd(), "src/db/generated/prisma/schema.prisma")
