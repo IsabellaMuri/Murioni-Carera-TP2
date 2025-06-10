@@ -30,7 +30,7 @@ export class tableService {
       })
     } catch (error){
       console.error(error);
-      throw new Error("Error al obtener la mesa con id ")
+      throw new Error("Error al obtener la mesa con id")
     }
   }
   
