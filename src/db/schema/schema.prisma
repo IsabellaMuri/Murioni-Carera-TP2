@@ -6,3 +6,53 @@ datasource db {
   provider = "sqlite"
   url      = "file:./dev.db"
 }
+
+model Table {
+    table_number Int @id
+    status String
+
+    booking Booking[]
+}
+
+model Order {
+    order_id Int @id @default(autoincrement())
+    order_client Int
+    status String
+    plates String
+    deliver_adress String
+}
+
+model Menu {
+    plate_id Int @id @default(autoincrement())
+    name String
+    description String
+    price Float
+    category String
+}
+
+model Client {
+    client_id Int @id @default(autoincrement())
+    name String
+    email String @unique
+    phone Int
+    password String
+    adress String
+
+    booking Booking[]
+}
+
+model Admin {
+    name String
+    email String @unique
+    password String
+}
+
+model Booking {
+  booking_id Int @id @default(autoincrement())
+  datetime DateTime?
+  table_id Int
+  client_id Int
+
+  table Table @relation(fields: [table_id], references: [table_number])
+  client Client @relation(fields: [client_id], references: [client_id])
+}

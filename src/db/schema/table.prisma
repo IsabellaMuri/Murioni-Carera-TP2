@@ -1,4 +1,0 @@
-model Table {
-    table_number Int @id
-    status String
-}

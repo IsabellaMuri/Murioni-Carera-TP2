@@ -1,10 +1,10 @@
-import {  } from "@prisma/client";
+import { Order } from "@prisma/client";
 //completar
 
 import { db } from "../db/db";
 
 interface OrderBody {
-  number: number
+  order_id: number
   client_order: number
   status: string
   plates: string[]
@@ -23,15 +23,15 @@ crear una order -> anted d crearla adentro del database
 */
 
 export class orderService{ 
-  async getAllOrders(){
-  // Método para obtener todas las órdenes.
-    try {
+  async getAllOrders() {
+  // Método para obtener todas las mesas definidas en la db.
+  try {
       const order = await db.order.findMany({})
       return order;
-    } 
+    }
     catch (error) {
       console.error(error);
-      throw new Error("Error al obtener las órdenes.")
+      throw new Error("Error al obtener las mesas.")
     }
   }
 
@@ -40,7 +40,7 @@ export class orderService{
     try {
       const order = await db.order.findMany({
         where: {
-          number: orderNumber,
+          order_id: orderNumber,
         }
       })
       return order;
@@ -54,14 +54,11 @@ export class orderService{
   async applyDiscount(body: OrderBody) {
   // Método para aplicar los descuentos según la cantidad de platos en la órden.
     try {
-      const platesQty = await db.order.plates.count({
+      const platesQty = await db.order.count({
         where: {
-          id: body.number,
+          order_id: body.order_id,
         }
       })
-
-
-
     }
     catch(error) {
       console.error(error);
@@ -77,13 +74,11 @@ export class orderService{
   async createOrder(body: OrderBody) {
   // Método para crear una nueva órden.
     try {
-
-
-      const table = await db.table.create({
+      const order = await db.order.create({
         data: body,
       })
-      return table;
 
+      return order;
     } 
     catch (error) {
       console.error("Error creando la órden: ", body)
@@ -95,18 +90,18 @@ export class orderService{
   async updateOrder(body: OrderBody) {
   // Método para actualizar la órden.
     try {
-      const order = await db.table.findFirst({
+      const order = await db.order.findFirst({
         where: {
-          id: body.number,
+          order_id: body.order_id,
         }
       })
 
       if (!order) {
-        throw new Error(`No se encontró la mesa con id ${body.number}`)
+        throw new Error(`No se encontró la mesa con id ${body.order_id}`)
       }
 
       const updatedOrder = await db.order.update({
-        where: { id: body.number},
+        where: { order_id: body.order_id},
         data: body // Modifica la data de la mesa.
       })                                                                                                      
 
@@ -115,7 +110,7 @@ export class orderService{
     } catch (error) {
         console.error("Error actualizando el estado de la órden.")
         console.error(error);
-        throw new Error(`Error al actualizar el estado de órden con id ${body.number}.`) 
+        throw new Error(`Error al actualizar el estado de órden con id ${body.order_id}.`) 
     }
   }
 
@@ -129,12 +124,12 @@ export class orderService{
     try {
       const order = await db.order.findFirst({
         where: {
-          id: body.number,
+          order_id: body.order_id,
         }
       })
 
       if (!order) {
-        throw new Error(`No se encontró la órden con id ${body.number}`)
+        throw new Error(`No se encontró la órden con id ${body.order_id}`)
       }                                                                                                   
 
       return body.status;
@@ -142,7 +137,7 @@ export class orderService{
     } catch (error) {
         console.error("Error obteniendo el estado de la órden.")
         console.error(error);
-        throw new Error(`Error al obtener el estado de órden con id ${body.number}.`) 
+        throw new Error(`Error al obtener el estado de órden con id ${body.order_id}.`) 
     }
   }
 }

@@ -1,4 +1,4 @@
-import {  } from "@prisma/client";
+import { Table } from "@prisma/client";
 //completar
 
 import { db } from "../db/db";
@@ -14,7 +14,8 @@ export class tableService {
   try {
       const table = await db.table.findMany({})
       return table;
-    } catch (error) {
+    }
+    catch (error) {
       console.error(error);
       throw new Error("Error al obtener las mesas.")
     }
@@ -25,10 +26,11 @@ export class tableService {
     try {
       const table = await db.table.findFirst({
         where:{
-        id: tableId,
+        table_number: tableId,
       }
       })
-    } catch (error){
+    }
+    catch (error){
       console.error(error);
       throw new Error("Error al obtener la mesa con id")
     }
@@ -43,11 +45,12 @@ export class tableService {
       }
 
       const table = await db.table.create({
-      data: body,
+        data: body
       })
       return table;
 
-    } catch (error) {
+    }
+    catch (error) {
       console.error("Error creando la mesa: ", body)
       console.error(error);
       throw new Error("Error al crear mesa.")
@@ -59,7 +62,7 @@ export class tableService {
     try {
       const table = await db.table.findFirst({
         where: {
-          id: body.table_number,
+          table_number: body.table_number,
         }
       })
 
@@ -68,13 +71,16 @@ export class tableService {
       }
 
       const updatedTable = await db.table.update({
-        where: { id: body.table_number},
+        where: { 
+          table_number: body.table_number
+        },
         data: body // Modifica la data de la mesa.
       })
 
       return updatedTable;
 
-    } catch (error) {
+    }
+    catch (error) {
         console.error("Error actualizando el estado de la mesa.")
         console.error(error);
         throw new Error(`Error al actualizar el estado de mesa con id ${body.table_number}.`) 
@@ -86,7 +92,7 @@ export class tableService {
     try {
       const table = await db.table.findFirst({
         where: {
-          id: tableId
+          table_number: tableId
         }
       })
 
@@ -96,11 +102,12 @@ export class tableService {
         
       const deletedTable = await db.table.delete({
       where: {
-        id: tableId
+        table_number: tableId
       }
       })
       return deletedTable;
-    } catch (error) {
+    } 
+    catch (error) {
       throw new Error(`Error al eliminar la mesa con id ${tableId}.`) 
     }
   }
@@ -110,7 +117,7 @@ export class tableService {
     try {
       const table = await db.table.findFirst({
         where: {
-          id: tableId
+          table_number: tableId
         }
       })
 
@@ -119,7 +126,8 @@ export class tableService {
       }
 
       return table.status;
-    } catch (error) {
+    }
+    catch (error) {
       throw new Error(`Error al obtener el status de la mesa con id ${tableId}.`) 
     }
   }

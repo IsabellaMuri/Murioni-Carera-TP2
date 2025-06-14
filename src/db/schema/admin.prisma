@@ -1,5 +1,0 @@
-model Admin {
-    name String
-    email String @unique
-    password String
-}
