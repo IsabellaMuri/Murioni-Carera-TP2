@@ -29,6 +29,8 @@ export class tableService {
         table_number: tableId,
       }
       })
+      return table;
+      
     }
     catch (error){
       console.error(error);
@@ -50,10 +52,10 @@ export class tableService {
       return table;
 
     }
-    catch (error) {
+    catch (error: any) {
       console.error("Error creando la mesa: ", body)
       console.error(error);
-      throw new Error("Error al crear mesa.")
+      throw new Error(error.message ||"Error al crear mesa.")
     }
   }
 

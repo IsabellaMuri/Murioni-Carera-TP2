@@ -19,7 +19,9 @@ model Order {
     order_client Int
     status String
     plates String
-    deliver_adress String
+    deliver_address String
+    discount Float?
+    total Float?
 }
 
 model Menu {
@@ -36,7 +38,7 @@ model Client {
     email String @unique
     phone Int
     password String
-    adress String
+    address String
 
     booking Booking[]
 }

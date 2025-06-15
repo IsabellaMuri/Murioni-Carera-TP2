@@ -1,4 +1,4 @@
-import {  } from "@prisma/client";
+import { Client } from "@prisma/client";
 //completar
 
 import { db } from "../db/db";

@@ -1,14 +1,12 @@
 import { Order } from "@prisma/client";
-//completar
-
 import { db } from "../db/db";
 
 interface OrderBody {
   order_id: number
-  client_order: number
+  order_client: number
   status: string
-  plates: string[]
-  deliver_adress: string
+  plates: string
+  deliver_address: string
 }
 /*
 el orderbody no contiene el descuento y total 
@@ -27,7 +25,12 @@ export class orderService{
   // Método para obtener todas las mesas definidas en la db.
   try {
       const order = await db.order.findMany({})
-      return order;
+      
+      return order.map(order => ({
+      ...order,
+      plates: JSON.parse(order.plates),
+    }));
+
     }
     catch (error) {
       console.error(error);
@@ -35,15 +38,22 @@ export class orderService{
     }
   }
 
-  async getOrderById(orderNumber: number) {
+  async getOrderById(orderId: number) : Promise<Omit<Order, 'plates'> & { plates: string[] } | null> {
   // Método para obtener una órden en base a un id específico.
     try {
-      const order = await db.order.findMany({
-        where: {
-          order_id: orderNumber,
-        }
-      })
-      return order;
+      const order = await db.order.findUnique({
+        where: { 
+          order_id: orderId 
+        },
+      });
+
+    if (!order) return null;
+
+    return {
+      ...order,
+      plates: JSON.parse(order.plates),
+    };
+
     } 
     catch (error) {
       console.error(error);
@@ -51,39 +61,59 @@ export class orderService{
     }
   }
 
-  async applyDiscount(body: OrderBody) {
-  // Método para aplicar los descuentos según la cantidad de platos en la órden.
-    try {
-      const platesQty = await db.order.count({
-        where: {
-          order_id: body.order_id,
-        }
-      })
-    }
-    catch(error) {
-      console.error(error);
-      throw new Error("Error al aplicar descuento.")
-    }
+  async applyDiscount(body: OrderBody): Promise<number> {
+    // Método para calcular el descuento a aplicar en la órden
+  try {
+    const totalOrders = await db.order.count({
+      where: {
+        order_client: body.order_client,
+      }
+    });
+
+    if (totalOrders > 7) return 0.5;
+    if (totalOrders > 5) return 0.2;
+    if (totalOrders > 3) return 0.1;
+    return 0;
+
   }
+  catch (error) {
+    console.error(error);
+    throw new Error("Error al aplicar descuento.");
+  }
+}
 
-  calculateTotalAmount() {
+  calculateTotalAmount(body: OrderBody) {
   // Método para calcular el monto total de la órden.
-
+    return body.plates.length * 100;
   }
 
   async createOrder(body: OrderBody) {
   // Método para crear una nueva órden.
     try {
-      const order = await db.order.create({
-        data: body,
-      })
+      const discount = await this.applyDiscount(body);
+      const total = this.calculateTotalAmount(body);
+      const totalWithDiscount = total - total * discount;
 
-      return order;
-    } 
-    catch (error) {
-      console.error("Error creando la órden: ", body)
+      const order = await db.order.create({
+        data: {
+          order_client: body.order_client,
+          status: body.status,
+          plates: JSON.stringify(body.plates),
+          deliver_address: body.deliver_address,
+          discount,
+          total: totalWithDiscount,
+        },
+      });
+
+      return {
+        ...order,
+        plates: JSON.parse(order.plates),
+      };
+
+    } catch (error) {
+      console.error("Error creando la órden: ", body);
       console.error(error);
-      throw new Error("Error al crear órden.")
+      throw new Error("Error al crear órden.");
     }
   }
 
@@ -91,53 +121,49 @@ export class orderService{
   // Método para actualizar la órden.
     try {
       const order = await db.order.findFirst({
-        where: {
-          order_id: body.order_id,
-        }
-      })
+        where: { 
+          order_id: body.order_id 
+        },
+      });
 
       if (!order) {
-        throw new Error(`No se encontró la mesa con id ${body.order_id}`)
+        throw new Error(`No se encontró la mesa con id ${body.order_id}`);
       }
 
-      const updatedOrder = await db.order.update({
-        where: { order_id: body.order_id},
-        data: body // Modifica la data de la mesa.
-      })                                                                                                      
+      const updatedOrder = await db.order.update({where: { order_id: body.order_id },
+        data: {
+          order_client: body.order_client,
+          status: body.status,
+          plates: JSON.stringify(body.plates),
+          deliver_address: body.deliver_address,
+        },
+      });
 
       return updatedOrder;
-
     } catch (error) {
-        console.error("Error actualizando el estado de la órden.")
-        console.error(error);
-        throw new Error(`Error al actualizar el estado de órden con id ${body.order_id}.`) 
+      console.error("Error actualizando el estado de la órden.");
+      console.error(error);
+      throw new Error(`Error al actualizar la órden con id ${body.order_id}.`);
     }
   }
 
-  /* async cancelOrder(orderNumber: number) {
-  // Método para cancelar una órden.
-    
-  } */
-
-  async getStatus(body: OrderBody) {
-  // Método para obtener el estado de la órden.
+  async cancelOrder(orderId: number) {
     try {
-      const order = await db.order.findFirst({
+      const order = await db.order.delete({
         where: {
-          order_id: body.order_id,
+          order_id: orderId,
         }
-      })
-
+      });
       if (!order) {
-        throw new Error(`No se encontró la órden con id ${body.order_id}`)
-      }                                                                                                   
+        throw new Error(`No se encontró la mesa con id ${orderId}`);
+      }
 
-      return body.status;
-
-    } catch (error) {
-        console.error("Error obteniendo el estado de la órden.")
-        console.error(error);
-        throw new Error(`Error al obtener el estado de órden con id ${body.order_id}.`) 
+      return order;
+    }
+    catch (error: any) {
+      console.error("Error eliminando la órden.")
+      console.error(error);
+      throw new Error(error.message || `Error al eliminar la órden con id ${orderId}.`);
     }
   }
 }

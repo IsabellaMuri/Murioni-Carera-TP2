@@ -11,7 +11,8 @@ orderRouter.get("/", async (_: Request, res: Response) => {
 
     res.status(200).json({ ok: true, data: orders });
 
-  } catch (error: any) {
+  }
+  catch (error: any) {
     res.status(500).json({ ok: false, error: (error as any).message });
   }
 });
@@ -19,51 +20,51 @@ orderRouter.get("/", async (_: Request, res: Response) => {
 orderRouter.get("/:id", async (req: Request, res: Response) => {
   try {
     const orderNumber = parseInt(req.params.id); 
-
     const order = await OrderService.getOrderById(orderNumber);
 
     res.status(200).json({ ok:true, data: order});
 
-  } catch (error: any) {
+  }
+  catch (error: any) {
     res.status(500).json({ ok: false, error: (error as any).message });
   }
 });
 
 orderRouter.post("/", async (req: Request, res: Response) => {
-    try {
-        const OrderBody = req.body;
-        
-        const table = await OrderService.createOrder(OrderBody);
+  try {
+      const OrderBody = req.body;
+      const table = await OrderService.createOrder(OrderBody);
 
-        res.status(200).json({ ok: true, data: table });
+      res.status(200).json({ ok: true, data: table });
 
-    } catch (error) {
+  }
+  catch (error) {
     res.status(500).json({ ok: false, error: (error as any).message });
-    }
+  }
 });
 
 orderRouter.put("/:id", async (req: Request, res: Response) => {
-    try {
-        const orderBody = req.body;
-        
-        const order = await OrderService.updateOrder(orderBody);
+  try {
+      const orderBody = req.body;
+      const order = await OrderService.updateOrder(orderBody);
 
-        res.status(200).json({ ok: true, data: order });
+      res.status(200).json({ ok: true, data: order });
 
-    } catch (error) {
+  }
+  catch (error) {
     res.status(500).json({ ok: false, error: (error as any).message });
-    }
+  }
 });
 
-orderRouter.get("/", async (req: Request, res: Response) => {
-    try {
-        const orderBody = req.body;
-        
-        const order = await OrderService.getStatus(orderBody);
+orderRouter.delete("/:id", async (req: Request, res: Response) => {
+  try {
+      const orderId = parseInt(req.params.id);
+      const order = await OrderService.cancelOrder(orderId);
 
-        res.status(200).json({ ok: true, data: order });
-        
-    } catch (error) {
+      res.status(200).json({ ok: true, data: order });
+
+  }
+  catch (error) {
     res.status(500).json({ ok: false, error: (error as any).message });
-    }
+  }
 });
