@@ -1,7 +1,7 @@
 import { Order } from "@prisma/client";
 import { db } from "../db/db";
 
-interface OrderBody {
+interface orderBody {
   order_id: number
   order_client: number
   status: string
@@ -20,9 +20,9 @@ crear una order -> anted d crearla adentro del database
 -por ultimo creas el pedido mandandole el body y el descuento+total
 */
 
-export class orderService{ 
+export class orderService { 
   async getAllOrders() {
-  // Método para obtener todas las mesas definidas en la db.
+    // Método para obtener todas las mesas definidas en la db.
   try {
       const order = await db.order.findMany({})
       
@@ -39,7 +39,7 @@ export class orderService{
   }
 
   async getOrderById(orderId: number) : Promise<Omit<Order, 'plates'> & { plates: string[] } | null> {
-  // Método para obtener una órden en base a un id específico.
+    // Método para obtener una órden en base a un id específico.
     try {
       const order = await db.order.findUnique({
         where: { 
@@ -61,34 +61,34 @@ export class orderService{
     }
   }
 
-  async applyDiscount(body: OrderBody): Promise<number> {
+  async applyDiscount(body: orderBody): Promise<number> {
     // Método para calcular el descuento a aplicar en la órden
-  try {
-    const totalOrders = await db.order.count({
-      where: {
-        order_client: body.order_client,
-      }
-    });
+    try {
+      const totalOrders = await db.order.count({
+        where: {
+          order_client: body.order_client,
+        }
+      });
 
-    if (totalOrders > 7) return 0.5;
-    if (totalOrders > 5) return 0.2;
-    if (totalOrders > 3) return 0.1;
-    return 0;
+      if (totalOrders > 7) return 0.5;
+      if (totalOrders > 5) return 0.2;
+      if (totalOrders > 3) return 0.1;
+      return 0;
 
+    }
+    catch (error) {
+      console.error(error);
+      throw new Error("Error al aplicar descuento.");
+    }
   }
-  catch (error) {
-    console.error(error);
-    throw new Error("Error al aplicar descuento.");
-  }
-}
 
-  calculateTotalAmount(body: OrderBody) {
-  // Método para calcular el monto total de la órden.
+  calculateTotalAmount(body: orderBody) {
+    // Método para calcular el monto total de la órden.
     return body.plates.length * 100;
   }
 
-  async createOrder(body: OrderBody) {
-  // Método para crear una nueva órden.
+  async createOrder(body: orderBody) {
+    // Método para crear una nueva órden.
     try {
       const discount = await this.applyDiscount(body);
       const total = this.calculateTotalAmount(body);
@@ -117,8 +117,8 @@ export class orderService{
     }
   }
 
-  async updateOrder(body: OrderBody) {
-  // Método para actualizar la órden.
+  async updateOrder(body: orderBody) {
+    // Método para actualizar la órden.
     try {
       const order = await db.order.findFirst({
         where: { 
@@ -127,7 +127,7 @@ export class orderService{
       });
 
       if (!order) {
-        throw new Error(`No se encontró la mesa con id ${body.order_id}`);
+        throw new Error(`No se encontró la órden con id ${body.order_id}`);
       }
 
       const updatedOrder = await db.order.update({where: { order_id: body.order_id },
@@ -148,12 +148,14 @@ export class orderService{
   }
 
   async cancelOrder(orderId: number) {
+    // Método para cancelar una órden con un ID específico.
     try {
       const order = await db.order.delete({
         where: {
           order_id: orderId,
         }
       });
+
       if (!order) {
         throw new Error(`No se encontró la mesa con id ${orderId}`);
       }

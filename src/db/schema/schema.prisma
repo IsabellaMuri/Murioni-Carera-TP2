@@ -8,10 +8,10 @@ datasource db {
 }
 
 model Table {
-    table_number Int @id
+    table_number Int @id @default(autoincrement())
     status String
 
-    booking Booking[]
+    booking Reservation[]
 }
 
 model Order {
@@ -24,7 +24,7 @@ model Order {
     total Float?
 }
 
-model Menu {
+model Plate {
     plate_id Int @id @default(autoincrement())
     name String
     description String
@@ -40,7 +40,7 @@ model Client {
     password String
     address String
 
-    booking Booking[]
+    booking Reservation[]
 }
 
 model Admin {
@@ -49,9 +49,9 @@ model Admin {
     password String
 }
 
-model Booking {
-  booking_id Int @id @default(autoincrement())
-  datetime DateTime?
+model Reservation {
+  reservation_id Int @id @default(autoincrement())
+  datetime DateTime @default(now())
   table_id Int
   client_id Int
 

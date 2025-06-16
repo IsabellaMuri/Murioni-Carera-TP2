@@ -19,10 +19,10 @@ orderRouter.get("/", async (_: Request, res: Response) => {
 
 orderRouter.get("/:id", async (req: Request, res: Response) => {
   try {
-    const orderNumber = parseInt(req.params.id); 
-    const order = await OrderService.getOrderById(orderNumber);
+    const orderId = parseInt(req.params.id); 
+    const order = await OrderService.getOrderById(orderId);
 
-    res.status(200).json({ ok:true, data: order});
+    res.status(200).json({ ok: true, data: order});
 
   }
   catch (error: any) {

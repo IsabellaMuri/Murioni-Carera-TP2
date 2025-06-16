@@ -1,5 +1,4 @@
 import { Table } from "@prisma/client";
-//completar
 
 import { db } from "../db/db";
 
@@ -12,8 +11,8 @@ export class tableService {
   async getAllTables() {
   // Método para obtener todas las mesas definidas en la db.
   try {
-      const table = await db.table.findMany({})
-      return table;
+      const tables = await db.table.findMany({})
+      return tables;
     }
     catch (error) {
       console.error(error);
@@ -26,15 +25,15 @@ export class tableService {
     try {
       const table = await db.table.findFirst({
         where:{
-        table_number: tableId,
-      }
+          table_number: tableId,
+        }
       })
       return table;
       
     }
     catch (error){
       console.error(error);
-      throw new Error("Error al obtener la mesa con id")
+      throw new Error(`Error al obtener la mesa con id ${tableId}`)
     }
   }
   
@@ -90,7 +89,7 @@ export class tableService {
   }
 
   async deleteTable(tableId: number) {
-  // Método para eliminar una mesa.
+    // Método para eliminar una mesa.
     try {
       const table = await db.table.findFirst({
         where: {
@@ -115,7 +114,7 @@ export class tableService {
   }
 
   async getStatus(tableId: number) {
-  // Método para devolver el estado de la mesa.
+    // Método para devolver el estado de la mesa.
     try {
       const table = await db.table.findFirst({
         where: {

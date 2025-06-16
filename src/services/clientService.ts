@@ -1,9 +1,8 @@
 import { Client } from "@prisma/client";
-//completar
 
 import { db } from "../db/db";
 
-interface CreateClientBody {
+interface ClientBody {
   name: string
   email: string
   phone: number
