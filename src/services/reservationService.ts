@@ -9,6 +9,8 @@ interface reservationBody {
 }
 
 export class reservationService {
+
+	//admin
 	async getAllReservations() {
 		// Método para obtener todas las reservas.
 		try {
@@ -21,7 +23,7 @@ export class reservationService {
       throw new Error("Error al obtener las reservas.")
 		}
 	}
-
+/* 
 	async getReservationById(reservationId: number) {
 		// Método para obtener una reserva con un ID específico.
 		try {
@@ -37,9 +39,9 @@ export class reservationService {
 			console.error(error);
       throw new Error("Error al obtener la reserva.")
 		}
-	}
+	} */
 
-	async getReservationByTable(tableId: number) {
+/* 	async getReservationByTable(tableId: number) {
 		// Método para obtener las reservas de una mesa con un ID específico.
 		try {
 			const reservedTable = await db.reservation.findMany({
@@ -58,8 +60,11 @@ export class reservationService {
 			console.error(error);
       throw new Error("Error al obtener las reserva de la mesa.")
 		}
-	}
+	} */
 
+		//Cliente pueda ver SUS reservas
+		// pasar id mediente el token del login
+		// NO HACER /reservas:id
 	async getReservationByClient(clientId: number) {
 		// Método para obtener las reservas de un cliente con un ID específico.
 		try {
@@ -84,6 +89,8 @@ export class reservationService {
 	async createReservation(body: reservationBody) {
 		// Método para crear una nueva reserva.
 		try {
+			//chequeo si la mesa disponible sino error
+			//creo reserva
 			const reservation = await db.reservation.create({
 				data: {
 					reservation_id: body.reservation_id,
@@ -94,11 +101,11 @@ export class reservationService {
 			})
 
 			return reservation;
+			// update status mesa await blabla
 		}
-		catch (error: any) {
-			console.error("Error creando la reserva: ", body)
+		catch (error) {
 			console.error(error);
-			throw new Error(error.message ||"Error al crear reserva.")
+			throw new Error("Error al crear reserva.")
 		}
 	}
 
@@ -111,16 +118,17 @@ export class reservationService {
           }
         });
 
+		//update status a la table a disponible
+
         if (!reservation) {
           throw new Error(`No se encontró la reserva con id ${reservationId}`);
         }
 
         return reservation;
     }
-    catch (error: any) {
-      console.error("Error eliminando la reserva.")
+    catch (error) {
       console.error(error);
-      throw new Error(error.message || `Error al eliminar la reserva con id ${reservationId}.`);
+      throw new Error(`Error al eliminar la reserva con id ${reservationId}.`);
     }
   }
 }

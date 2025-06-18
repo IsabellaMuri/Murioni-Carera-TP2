@@ -4,7 +4,7 @@ import { db } from "../db/db";
 
 interface TableBody {
   table_number: number
-  status: string
+  status: boolean
 }
 
 export class tableService {
@@ -20,6 +20,23 @@ export class tableService {
     }
   }
 
+  async getAvailableTables() {
+    // Método para obtener todas las mesas dispoonibles.
+    try {
+      const tables = await db.table.findMany({
+        where: {
+          status: true,
+        }
+      })
+
+      return tables;
+    }
+    catch (error) {
+      console.error(error);
+      throw new Error("Error al obtener las mesas disponibles.")
+    }
+  }
+
   async getTableById(tableId: number) {
   // Método para obtener una mesa con un ID especifico.
     try {
@@ -28,8 +45,12 @@ export class tableService {
           table_number: tableId,
         }
       })
+
+      if (!table) {
+        throw new Error("No existe la mesa.")
+      }
+
       return table;
-      
     }
     catch (error){
       console.error(error);
@@ -41,7 +62,7 @@ export class tableService {
   // Método para crear una nueva mesa.
     try {
       const tablesQty = await db.table.count()
-      if (tablesQty > 15) {
+      if (tablesQty >= 15) {
         throw new Error('No se pueden crear más de 15 mesas.');
       }
 
@@ -51,14 +72,13 @@ export class tableService {
       return table;
 
     }
-    catch (error: any) {
-      console.error("Error creando la mesa: ", body)
+    catch (error) {
       console.error(error);
-      throw new Error(error.message ||"Error al crear mesa.")
+      throw new Error("Error al crear mesa.")
     }
   }
 
-  async updateStatus(body: TableBody) {
+  /* async updateStatus(body: TableBody) {
     // Método para actualizar el estado de la mesa en base a lo que se le pase.
     try {
       const table = await db.table.findFirst({
@@ -86,7 +106,7 @@ export class tableService {
         console.error(error);
         throw new Error(`Error al actualizar el estado de mesa con id ${body.table_number}.`) 
     }
-  }
+  } */
 
   async deleteTable(tableId: number) {
     // Método para eliminar una mesa.
@@ -110,26 +130,6 @@ export class tableService {
     } 
     catch (error) {
       throw new Error(`Error al eliminar la mesa con id ${tableId}.`) 
-    }
-  }
-
-  async getStatus(tableId: number) {
-    // Método para devolver el estado de la mesa.
-    try {
-      const table = await db.table.findFirst({
-        where: {
-          table_number: tableId
-        }
-      })
-
-      if (!table) {
-        throw new Error(`Error al encontrar la mesa con id ${tableId}.`)
-      }
-
-      return table.status;
-    }
-    catch (error) {
-      throw new Error(`Error al obtener el status de la mesa con id ${tableId}.`) 
     }
   }
 }

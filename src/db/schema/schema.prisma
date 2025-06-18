@@ -9,7 +9,7 @@ datasource db {
 
 model Table {
     table_number Int @id @default(autoincrement())
-    status String
+    status Boolean
 
     booking Reservation[]
 }

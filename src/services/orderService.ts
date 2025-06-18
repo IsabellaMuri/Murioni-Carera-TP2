@@ -23,21 +23,22 @@ crear una order -> anted d crearla adentro del database
 export class orderService { 
   async getAllOrders() {
     // Método para obtener todas las mesas definidas en la db.
-  try {
-      const order = await db.order.findMany({})
-      
-      return order.map(order => ({
-      ...order,
-      plates: JSON.parse(order.plates),
-    }));
+    try {
+        const order = await db.order.findMany({})
+        
+        return order.map(order => ({
+        ...order,
+        plates: JSON.parse(order.plates),
+      }));
 
-    }
-    catch (error) {
-      console.error(error);
-      throw new Error("Error al obtener las mesas.")
-    }
+      }
+      catch (error) {
+        console.error(error);
+        throw new Error("Error al obtener las mesas.")
+      }
   }
 
+  //HACER Q DEVUELVA PLATOS
   async getOrderById(orderId: number) : Promise<Omit<Order, 'plates'> & { plates: string[] } | null> {
     // Método para obtener una órden en base a un id específico.
     try {
@@ -47,6 +48,7 @@ export class orderService {
         },
       });
 
+      //devolver error en vez de null
     if (!order) return null;
 
     return {
@@ -61,6 +63,7 @@ export class orderService {
     }
   }
 
+  //POR PLATOS NO X ORDERS
   async applyDiscount(body: orderBody): Promise<number> {
     // Método para calcular el descuento a aplicar en la órden
     try {
@@ -82,17 +85,20 @@ export class orderService {
     }
   }
 
-  calculateTotalAmount(body: orderBody) {
+  calculateTotalAmount(total: number, discount : number) {
     // Método para calcular el monto total de la órden.
-    return body.plates.length * 100;
+    return total - total * discount / 100;
   }
 
   async createOrder(body: orderBody) {
     // Método para crear una nueva órden.
     try {
       const discount = await this.applyDiscount(body);
-      const total = this.calculateTotalAmount(body);
-      const totalWithDiscount = total - total * discount;
+
+      //agg un calcular subtotal/total sin desc 
+      //es agarrar los pllatos y agarrar el campo precio de los platos ysumarlos
+      /* const total = this.calculateTotalAmount(body); */
+      const totalWithDiscount = this.calculateTotalAmount(total, discount);
 
       const order = await db.order.create({
         data: {
@@ -100,7 +106,7 @@ export class orderService {
           status: body.status,
           plates: JSON.stringify(body.plates),
           deliver_address: body.deliver_address,
-          discount,
+          discount: discount,
           total: totalWithDiscount,
         },
       });
@@ -111,7 +117,6 @@ export class orderService {
       };
 
     } catch (error) {
-      console.error("Error creando la órden: ", body);
       console.error(error);
       throw new Error("Error al crear órden.");
     }
@@ -141,7 +146,6 @@ export class orderService {
 
       return updatedOrder;
     } catch (error) {
-      console.error("Error actualizando el estado de la órden.");
       console.error(error);
       throw new Error(`Error al actualizar la órden con id ${body.order_id}.`);
     }
@@ -162,10 +166,9 @@ export class orderService {
 
       return order;
     }
-    catch (error: any) {
-      console.error("Error eliminando la órden.")
+    catch (error) {
       console.error(error);
-      throw new Error(error.message || `Error al eliminar la órden con id ${orderId}.`);
+      throw new Error(`Error al eliminar la órden con id ${orderId}.`);
     }
   }
 }

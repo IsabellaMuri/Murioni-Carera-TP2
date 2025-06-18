@@ -6,7 +6,7 @@ interface plateBody {
   plate_id: number
   name: string
   description: string
-  price: number //a chequear
+  price: number
   category: string
 }
 
@@ -76,10 +76,9 @@ export class plateService {
 
       return plate;
     }
-    catch (error: any) {
-      console.error("Error creando el plato: ", body)
+    catch (error) {
       console.error(error);
-      throw new Error(error.message ||"Error al crear plato.")
+      throw new Error("Error al crear plato.")
     }
   }
 
@@ -129,10 +128,9 @@ export class plateService {
 
         return plate;
     }
-    catch (error: any) {
-      console.error("Error eliminando el plato.")
+    catch (error) {
       console.error(error);
-      throw new Error(error.message || `Error al eliminar el plato con id ${plateId}.`);
+      throw new Error(`Error al eliminar el plato con id ${plateId}.`);
     }
   }
 }
