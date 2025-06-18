@@ -5,7 +5,7 @@ interface orderBody {
   order_id: number
   order_client: number
   status: string
-  plates: string
+  plates_order: string
   deliver_address: string
 }
 /*
@@ -98,13 +98,13 @@ export class orderService {
       //agg un calcular subtotal/total sin desc 
       //es agarrar los pllatos y agarrar el campo precio de los platos ysumarlos
       /* const total = this.calculateTotalAmount(body); */
-      const totalWithDiscount = this.calculateTotalAmount(total, discount);
+      //const totalWithDiscount = this.calculateTotalAmount(total, discount);
 
       const order = await db.order.create({
         data: {
           order_client: body.order_client,
           status: body.status,
-          plates: JSON.stringify(body.plates),
+          plates: JSON.stringify(body.plates_order),
           deliver_address: body.deliver_address,
           discount: discount,
           total: totalWithDiscount,
@@ -139,7 +139,7 @@ export class orderService {
         data: {
           order_client: body.order_client,
           status: body.status,
-          plates: JSON.stringify(body.plates),
+          plates: JSON.stringify(body.plates_order),
           deliver_address: body.deliver_address,
         },
       });

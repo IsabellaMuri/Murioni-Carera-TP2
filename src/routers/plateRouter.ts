@@ -28,8 +28,6 @@ plateRouter.get("/:id", async (req: Request, res: Response) => {
   }
 });
 
-
-
 plateRouter.post("/", async (req: Request, res: Response) => {
   try {
       const PlateBody = req.body;

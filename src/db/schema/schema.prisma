@@ -8,45 +8,55 @@ datasource db {
 }
 
 model Table {
-    table_number Int @id @default(autoincrement())
-    status Boolean
+  table_number Int @id @default(autoincrement())
+  status Boolean
 
-    booking Reservation[]
+  reservation Reservation[]
 }
 
 model Order {
-    order_id Int @id @default(autoincrement())
-    order_client Int
-    status String
-    plates String
-    deliver_address String
-    discount Float?
-    total Float?
+  order_id Int @id @default(autoincrement())
+  order_client Int
+  status String
+  plates String
+  deliver_address String
+  discount Float?
+  total Float?
+
+  plates_order OrderPlate[]
 }
 
 model Plate {
-    plate_id Int @id @default(autoincrement())
-    name String
-    description String
-    price Float
-    category String
+  plate_id Int @id @default(autoincrement())
+  name String
+  description String
+  price Float
+  category String
 }
 
-model Client {
-    client_id Int @id @default(autoincrement())
-    name String
-    email String @unique
-    phone Int
-    password String
-    address String
+model OrderPlate {
+  id Int @id @default(autoincrement())
+  order_id Int  
+  
+  order Order @relation(fields: [order_id], references: [order_id])
+}
 
-    booking Reservation[]
+
+model Client {
+  client_id Int @id @default(autoincrement())
+  name String
+  email String @unique
+  phone Int
+  password String
+  address String
+
+  reservation Reservation[]
 }
 
 model Admin {
-    name String
-    email String @unique
-    password String
+  name String
+  email String @unique
+  password String
 }
 
 model Reservation {

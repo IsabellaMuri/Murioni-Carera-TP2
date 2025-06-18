@@ -41,7 +41,7 @@ tableRouter.post("/", async (req: Request, res: Response) => {
   }
 });
 
-tableRouter.put("/:id", async (req: Request, res: Response) => {
+/* tableRouter.put("/:id", async (req: Request, res: Response) => {
   try {
     const tableId = parseInt(req.params.id);
     const tableStatus = req.body;
@@ -57,7 +57,7 @@ tableRouter.put("/:id", async (req: Request, res: Response) => {
   catch (error: any) {
     res.status(500).json({ ok: false, error: error.message });
   }
-});
+}); */
 
 tableRouter.delete("/:id", async (req: Request, res: Response) => {
   try {
