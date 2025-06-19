@@ -62,7 +62,7 @@ export class reservationService {
 		}
 	} */
 
-		//Cliente pueda ver SUS reservas
+		//Cliente pueda ver SUS reservas, esto mismo en order
 		// pasar id mediente el token del login
 		// NO HACER /reservas:id
 	async getReservationByClient(clientId: number) {

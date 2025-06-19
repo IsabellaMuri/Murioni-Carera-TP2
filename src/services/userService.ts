@@ -1,11 +1,12 @@
-import { Client } from "@prisma/client";
+import { User } from "@prisma/client";
 
 import { db } from "../db/db";
 
-interface ClientBody {
+interface UserBody {
   name: string
   email: string
   phone: number
   password: string
   adress: string
 }
+

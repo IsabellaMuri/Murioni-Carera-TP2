@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-  url      = "file:./dev.db"
+  url = "file: ../../../dev.db"
 }
 
 model Table {
@@ -45,30 +45,24 @@ model OrderPlate {
   order Order @relation(fields: [order_id], references: [order_id])
 }
 
-
-model Client {
-  client_id Int @id @default(autoincrement())
+model User {
+  user_id Int @id @default(autoincrement())
   name String
+  password String
   email String @unique
   phone Int
-  password String
   address String
+  is_admin Boolean @default(false)
 
   reservation Reservation[]
-}
-
-model Admin {
-  name String
-  email String @unique
-  password String
 }
 
 model Reservation {
   reservation_id Int @id @default(autoincrement())
   datetime DateTime @default(now())
   table_id Int
-  client_id Int
+  user_id Int
 
   table Table @relation(fields: [table_id], references: [table_number])
-  client Client @relation(fields: [client_id], references: [client_id])
+  client User @relation(fields: [user_id], references: [user_id])
 }

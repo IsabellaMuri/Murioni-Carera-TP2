@@ -1,5 +1,3 @@
-import { Plate } from "@prisma/client";
-
 import { db } from "../db/db";
 
 interface plateBody {

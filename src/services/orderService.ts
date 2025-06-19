@@ -35,8 +35,8 @@ export class orderService {
       }
   }
 
-  //HACER Q DEVUELVA PLATOS
-  async getOrderById(orderId: number){
+  /* //HACER Q DEVUELVA PLATOS
+  async getOrderById(orderId: number) : Promise<Omit<Order, 'plates'> & { plates: string[] } | null> {
     // Método para obtener una órden en base a un id específico.
     try {
       const order = await db.order.findUnique({
@@ -49,22 +49,28 @@ export class orderService {
       throw new Error(`No existe la órden con id ${orderId}`)
     }
 
-    return order;
+    const plates = await db.order.findMany({
+      include: {
+        plates_order: {
+          include: { plate: true }
+        }
+      }
+    });
+    return plates;
 
     } 
     catch (error) {
       console.error(error);
       throw new Error("Error al obtener la órden con número")
     }
-  }
+  } */
 
-  //POR PLATOS NO X ORDERS
-  async calculateDiscount(body: orderBody): Promise<number> {
+  /* async calculateDiscount(orderId: number): Promise<number> {
     // Método para calcular el descuento a aplicar en la órden
     try {
       const orderPlates = await db.orderPlate.findMany({
         where: {
-          order_id: body.order_id,
+          order_id: orderId,
         }
       });
 
@@ -85,9 +91,9 @@ export class orderService {
   calculateTotalAmount(total: number, discount : number) {
     // Método para calcular el monto total de la órden.
     return total - total * discount / 100;
-  }
+  } */
 
-  async createOrder(body: orderBody) {
+  /* async createOrder(body: orderBody) {
     // Método para crear una nueva órden.
     try {
       const orderPlates = await db.orderPlate.findMany({
@@ -105,12 +111,14 @@ export class orderService {
         subtotal += order_plates.plate.price;
       }
 
-      const discount = await this.calculateDiscount(body);
+      const discount = await this.calculateDiscount(body.); */
 
       //agg un calcular subtotal/total sin desc 
       //es agarrar los pllatos y agarrar el campo precio de los platos ysumarlos
       /* const total = this.calculateTotalAmount(body); */
-      const totalWithDiscount = this.calculateTotalAmount(subtotal, discount * 100);
+
+
+      /* const totalWithDiscount = this.calculateTotalAmount(subtotal, discount * 100);
 
       const order = await db.order.create({
         data: {
@@ -132,7 +140,7 @@ export class orderService {
       console.error(error);
       throw new Error("Error al crear órden.");
     }
-  }
+  } */
 
   async updateOrder(body: orderBody) {
     // Método para actualizar la órden.
