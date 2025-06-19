@@ -24,12 +24,9 @@ export class orderService {
   async getAllOrders() {
     // Método para obtener todas las mesas definidas en la db.
     try {
-        const order = await db.order.findMany({})
+        const orders = await db.order.findMany({})
         
-        return order.map(order => ({
-        ...order,
-        plates: JSON.parse(order.plates),
-      }));
+        return orders;
 
       }
       catch (error) {
@@ -39,7 +36,7 @@ export class orderService {
   }
 
   //HACER Q DEVUELVA PLATOS
-  async getOrderById(orderId: number) : Promise<Omit<Order, 'plates'> & { plates: string[] } | null> {
+  async getOrderById(orderId: number){
     // Método para obtener una órden en base a un id específico.
     try {
       const order = await db.order.findUnique({
@@ -48,13 +45,11 @@ export class orderService {
         },
       });
 
-      //devolver error en vez de null
-    if (!order) return null;
+    if (!order){
+      throw new Error(`No existe la órden con id ${orderId}`)
+    }
 
-    return {
-      ...order,
-      plates: JSON.parse(order.plates),
-    };
+    return order;
 
     } 
     catch (error) {
@@ -64,18 +59,20 @@ export class orderService {
   }
 
   //POR PLATOS NO X ORDERS
-  async applyDiscount(body: orderBody): Promise<number> {
+  async calculateDiscount(body: orderBody): Promise<number> {
     // Método para calcular el descuento a aplicar en la órden
     try {
-      const totalOrders = await db.order.count({
+      const orderPlates = await db.orderPlate.findMany({
         where: {
-          order_client: body.order_client,
+          order_id: body.order_id,
         }
       });
 
-      if (totalOrders > 7) return 0.5;
-      if (totalOrders > 5) return 0.2;
-      if (totalOrders > 3) return 0.1;
+      const totalPlates = orderPlates.length;
+
+      if (totalPlates > 7) return 0.5;
+      if (totalPlates > 5) return 0.2;
+      if (totalPlates > 3) return 0.1;
       return 0;
 
     }
@@ -93,18 +90,33 @@ export class orderService {
   async createOrder(body: orderBody) {
     // Método para crear una nueva órden.
     try {
-      const discount = await this.applyDiscount(body);
+      const orderPlates = await db.orderPlate.findMany({
+        where: {
+          order_id: body.order_id,
+        },
+
+        include: {
+          plate: true,
+        }
+      });
+
+      let subtotal = 0;
+      for (const order_plates of orderPlates) {
+        subtotal += order_plates.plate.price;
+      }
+
+      const discount = await this.calculateDiscount(body);
 
       //agg un calcular subtotal/total sin desc 
       //es agarrar los pllatos y agarrar el campo precio de los platos ysumarlos
       /* const total = this.calculateTotalAmount(body); */
-      //const totalWithDiscount = this.calculateTotalAmount(total, discount);
+      const totalWithDiscount = this.calculateTotalAmount(subtotal, discount * 100);
 
       const order = await db.order.create({
         data: {
           order_client: body.order_client,
           status: body.status,
-          plates: JSON.stringify(body.plates_order),
+          plates: body.plates_order,
           deliver_address: body.deliver_address,
           discount: discount,
           total: totalWithDiscount,
@@ -113,7 +125,7 @@ export class orderService {
 
       return {
         ...order,
-        plates: JSON.parse(order.plates),
+        plates: order.plates,
       };
 
     } catch (error) {
@@ -139,7 +151,7 @@ export class orderService {
         data: {
           order_client: body.order_client,
           status: body.status,
-          plates: JSON.stringify(body.plates_order),
+          plates: body.plates_order,
           deliver_address: body.deliver_address,
         },
       });

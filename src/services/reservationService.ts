@@ -27,7 +27,7 @@ export class reservationService {
 	async getReservationById(reservationId: number) {
 		// Método para obtener una reserva con un ID específico.
 		try {
-			const reservation = await db.reservation.findFirst({})
+			const reservation = await db.reservation.findUnique({})
 
 			if (!reservation) {
 				throw new Error(`No existe reserva con id ${reservationId}`)

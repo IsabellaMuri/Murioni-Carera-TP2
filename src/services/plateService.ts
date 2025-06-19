@@ -27,7 +27,7 @@ export class plateService {
   async getPlateById(plateId: number){
     // Método para obtener un plato con un ID específico.
     try {
-      const plate = await db.plate.findMany({
+      const plate = await db.plate.findUnique({
         where: {
           plate_id: plateId
         }

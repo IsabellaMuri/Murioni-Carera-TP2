@@ -32,12 +32,16 @@ model Plate {
   description String
   price Float
   category String
+
+  order_plates OrderPlate[]
 }
 
 model OrderPlate {
   id Int @id @default(autoincrement())
   order_id Int  
-  
+  plate_id Int
+
+  plate Plate @relation(fields: [plate_id], references: [plate_id])  
   order Order @relation(fields: [order_id], references: [order_id])
 }
 
