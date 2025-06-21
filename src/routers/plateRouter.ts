@@ -1,11 +1,12 @@
 import { Router, Request, Response } from "express";
 import { plateService } from "../services/plateService";
+import { isAdminMiddleware, jwtAuthMiddleware } from "../middleware/authentication-middleware";
 
 const PlateService = new plateService();
 
 export const plateRouter = Router();
 
-plateRouter.get("/", async (_: Request, res: Response) => {
+plateRouter.get("/", jwtAuthMiddleware, async (_: Request, res: Response) => {
   try {
     const plates = await PlateService.getAllPlates();
 
@@ -16,10 +17,10 @@ plateRouter.get("/", async (_: Request, res: Response) => {
   }
 });
 
-plateRouter.get("/:id", async (req: Request, res: Response) => {
+plateRouter.get("/:id", isAdminMiddleware, async (req: Request, res: Response) => {
   try {
     const plateId = parseInt(req.params.id);
-    const plate = await PlateService.getPlateById(plateId);
+    const plate = await plateService.getPlateById(plateId);
 
     res.status(200).json({ ok: true, data: plate });
   }
@@ -28,7 +29,7 @@ plateRouter.get("/:id", async (req: Request, res: Response) => {
   }
 });
 
-plateRouter.post("/", async (req: Request, res: Response) => {
+plateRouter.post("/", isAdminMiddleware, async (req: Request, res: Response) => {
   try {
       const PlateBody = req.body;
       const plate = await PlateService.createPlate(PlateBody);
@@ -40,19 +41,25 @@ plateRouter.post("/", async (req: Request, res: Response) => {
   }
 });
 
-plateRouter.put("/:id", async (req: Request, res: Response) => {
+plateRouter.patch("/:id/price", isAdminMiddleware, async (req: Request, res: Response) => {
   try {
-      const plateBody = req.body;
-      const plate = await PlateService.updatePrice(plateBody);
+      const plateId = parseInt(req.params.id);
+      const { price } = req.body;
 
-      res.status(200).json({ ok: true, data: plate });
+      if (typeof price !== "number" || isNaN(price)) {
+        res.status(400).json({ ok: false, error: "Precio inválido" })
+      }
+
+      const updatedPlate = await PlateService.updatePrice(plateId, price);
+
+      res.status(200).json({ ok: true, data: updatedPlate });
   }
   catch (error) {
     res.status(500).json({ ok: false, error: (error as any).message });
   }
 });
 
-plateRouter.delete("/:id", async (req: Request, res: Response) => {
+plateRouter.delete("/:id", isAdminMiddleware, async (req: Request, res: Response) => {
   try {
       const plateId = parseInt(req.params.id);
       const plate = await PlateService.deletePlate(plateId);
@@ -64,7 +71,7 @@ plateRouter.delete("/:id", async (req: Request, res: Response) => {
   }
 });
 
-plateRouter.get("/category/:category", async (req: Request, res: Response) => {
+plateRouter.get("/category/:category", jwtAuthMiddleware, async (req: Request, res: Response) => {
   try {
     const platesCategory = req.params.category;
     const plates = await PlateService.getPlatesByCategory(platesCategory);

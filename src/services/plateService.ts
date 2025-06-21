@@ -1,7 +1,7 @@
+import { Plate } from "@prisma/client";
 import { db } from "../db/db";
 
 interface plateBody {
-  plate_id: number
   name: string
   description: string
   price: number
@@ -14,7 +14,7 @@ export class plateService {
     try {
       const plates = await db.plate.findMany({})
 
-      return plates;
+      return plates
     }
     catch (error) {
       console.error(error);
@@ -22,7 +22,7 @@ export class plateService {
     }
   }
 
-  async getPlateById(plateId: number){
+  static async getPlateById(plateId: number){
     // Método para obtener un plato con un ID específico.
     try {
       const plate = await db.plate.findUnique({
@@ -35,7 +35,7 @@ export class plateService {
         throw new Error(`No existe un plato con id ${plateId}`)
       }
 
-      return plate;
+      return plate
     }
     catch (error) {
       console.error(error);
@@ -50,9 +50,9 @@ export class plateService {
         where: {
           category
         }
-      });
+      })
 
-      return plate;
+      return plate
     }
     catch (error) {
       console.error(error);
@@ -69,10 +69,10 @@ export class plateService {
           description: body.description,
           price: body.price,
           category: body.category
-        },
+        }
       })
 
-      return plate;
+      return plate
     }
     catch (error) {
       console.error(error);
@@ -80,34 +80,34 @@ export class plateService {
     }
   }
 
-  async updatePrice(body: plateBody) {
+  async updatePrice(plateId: number, price: number) {
     // Método para actualizar el precio de un plato.
     try {
       const plate = await db.plate.findFirst({
         where: { 
-          plate_id: body.plate_id 
-        },
-      });
+          plate_id: plateId 
+        }
+      })
 
       if (!plate) {
-        throw new Error(`No se encontró el plato con id ${body.plate_id}`);
+        throw new Error(`No se encontró el plato con id ${plateId}`);
       }
 
-      const updatedPlate = await db.plate.update({where: { plate_id: body.plate_id },
-        data: {
-          name: body.name,
-          description: body.description,
-          price: body.price,
-          category: body.category
+      const updatedPlate = await db.plate.update({
+        where: { 
+          plate_id: plateId
         },
-      });
+        data: {
+          price: price
+        }
+      })
 
-      return updatedPlate;
+      return updatedPlate
     }
     catch (error) {
       console.error("Error actualizando el precio del plato.");
       console.error(error);
-      throw new Error(`Error al actualizar el plato con id ${body.plate_id}.`);
+      throw new Error(`Error al actualizar el precio del plato con id ${plateId}.`);
     }
   }
 
@@ -116,15 +116,15 @@ export class plateService {
     try {
         const plate = await db.plate.delete({
           where: {
-            plate_id: plateId,
+            plate_id: plateId
           }
-        });
+        })
 
         if (!plate) {
           throw new Error(`No se encontró el plato con id ${plateId}`);
         }
 
-        return plate;
+        return plate
     }
     catch (error) {
       console.error(error);

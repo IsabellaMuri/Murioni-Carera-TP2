@@ -1,5 +1,3 @@
-import { Table } from "@prisma/client";
-
 import { db } from "../db/db";
 
 interface TableBody {
@@ -12,7 +10,7 @@ export class tableService {
   // Método para obtener todas las mesas definidas en la db.
   try {
       const tables = await db.table.findMany({})
-      return tables;
+      return tables
     }
     catch (error) {
       console.error(error);
@@ -25,11 +23,11 @@ export class tableService {
     try {
       const tables = await db.table.findMany({
         where: {
-          status: true,
+          status: true
         }
       })
 
-      return tables;
+      return tables
     }
     catch (error) {
       console.error(error);
@@ -37,12 +35,12 @@ export class tableService {
     }
   }
 
-  async getTableById(tableId: number) {
+  static async getTableById(tableId: number) {
   // Método para obtener una mesa con un ID especifico.
     try {
       const table = await db.table.findFirst({
         where:{
-          table_number: tableId,
+          table_number: tableId
         }
       })
 
@@ -50,7 +48,7 @@ export class tableService {
         throw new Error("No existe la mesa.")
       }
 
-      return table;
+      return table
     }
     catch (error){
       console.error(error);
@@ -69,44 +67,14 @@ export class tableService {
       const table = await db.table.create({
         data: body
       })
-      return table;
 
+      return table
     }
     catch (error) {
       console.error(error);
       throw new Error("Error al crear mesa.")
     }
   }
-
-  /* async updateStatus(body: TableBody) {
-    // Método para actualizar el estado de la mesa en base a lo que se le pase.
-    try {
-      const table = await db.table.findFirst({
-        where: {
-          table_number: body.table_number,
-        }
-      })
-
-      if (!table) {
-        throw new Error(`No se encontró la mesa con id ${body.table_number}`)
-      }
-
-      const updatedTable = await db.table.update({
-        where: { 
-          table_number: body.table_number
-        },
-        data: body // Modifica la data de la mesa.
-      })
-
-      return updatedTable;
-
-    }
-    catch (error) {
-        console.error("Error actualizando el estado de la mesa.")
-        console.error(error);
-        throw new Error(`Error al actualizar el estado de mesa con id ${body.table_number}.`) 
-    }
-  } */
 
   async deleteTable(tableId: number) {
     // Método para eliminar una mesa.
@@ -126,7 +94,7 @@ export class tableService {
         table_number: tableId
       }
       })
-      return deletedTable;
+      return deletedTable
     } 
     catch (error) {
       throw new Error(`Error al eliminar la mesa con id ${tableId}.`) 

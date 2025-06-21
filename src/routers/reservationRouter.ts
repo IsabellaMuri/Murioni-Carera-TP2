@@ -1,11 +1,12 @@
 import { Router, Request, Response } from "express";
 import { reservationService } from "../services/reservationService";
+import { isAdminMiddleware } from "../middleware/authentication-middleware";
 
 const ReservationService = new reservationService();
 
 export const reservationRouter = Router();
 
-reservationRouter.get("/", async (_: Request, res: Response) => {
+reservationRouter.get("/", isAdminMiddleware, async (_: Request, res: Response) => {
   try {
     const reservations = await ReservationService.getAllReservations();
 
@@ -17,20 +18,20 @@ reservationRouter.get("/", async (_: Request, res: Response) => {
   }
 });
 
-reservationRouter.get("/:id", async (req: Request, res: Response) => {
-  try {
-    const reservationId = parseInt(req.params.id); 
-    const reservation = await ReservationService.getReservationById(reservationId);
+reservationRouter.get("/:id", isAdminMiddleware, async (req: Request, res: Response) => {
+try {
+  const clientId = parseInt(req.params.id); 
+  const reservation = await ReservationService.getReservationByClient(clientId);
 
-    res.status(200).json({ ok: true, data: reservation});
+  res.status(200).json({ ok: true, data: reservation});
 
-  }
-  catch (error: any) {
-    res.status(500).json({ ok: false, error: (error as any).message });
-  }
+}
+catch (error: any) {
+  res.status(500).json({ ok: false, error: (error as any).message });
+}
 });
 
-reservationRouter.post("/", async (req: Request, res: Response) => {
+reservationRouter.post("/", isAdminMiddleware, async (req: Request, res: Response) => {
   try {
       const ReservationBody = req.body;
       const reservation = await ReservationService.createReservation(ReservationBody);
@@ -43,28 +44,14 @@ reservationRouter.post("/", async (req: Request, res: Response) => {
   }
 });
 
-reservationRouter.get("/table/:tableId", async (req: Request, res: Response) => {
+reservationRouter.delete("/:id", isAdminMiddleware, async (req: Request, res: Response) => {
   try {
-    const reservedTableId = parseInt(req.params.tableId); 
-    const reservations = await ReservationService.getReservationByTable(reservedTableId);
+      const reservationId = parseInt(req.params.id);
+      const reservation = await ReservationService.deleteReservation(reservationId);
 
-    res.status(200).json({ ok: true, data: reservations});
-
+      res.status(200).json({ ok: true, data: reservation });
   }
-  catch (error: any) {
-    res.status(500).json({ ok: false, error: (error as any).message });
-  }
-});
-
-reservationRouter.get("/client/:clientId", async (req: Request, res: Response) => {
-  try {
-    const reservationClientId = parseInt(req.params.clientId); 
-    const reservations = await ReservationService.getReservationById(reservationClientId);
-
-    res.status(200).json({ ok: true, data: reservations});
-
-  }
-  catch (error: any) {
+  catch (error) {
     res.status(500).json({ ok: false, error: (error as any).message });
   }
 });

@@ -20,6 +20,7 @@ model Order {
   status String
   plates String
   deliver_address String
+  subtotal Float?
   discount Float?
   total Float?
 
