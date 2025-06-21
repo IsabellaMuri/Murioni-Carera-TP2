@@ -52,7 +52,7 @@ tableRouter.post("/", isAdminMiddleware, async (req: Request, res: Response) => 
   }
 });
 
-tableRouter.delete("/:id", async (req: Request, res: Response) => {
+tableRouter.delete("/:id", isAdminMiddleware, async (req: Request, res: Response) => {
   try {
       const tableId = parseInt(req.params.id);
       const table = await tableServiceInstance.deleteTable(tableId);

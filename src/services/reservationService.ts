@@ -48,7 +48,7 @@ export class reservationService {
 		// Método para crear una nueva reserva.
 		try {
 			const table = await tableService.getTableById(body.table_id)
-
+			console.log(table)
 			if (!table) {
 				throw new Error(`No existe la mesa con id ${body.table_id}`)
 			}
@@ -56,7 +56,7 @@ export class reservationService {
 			if (!table.status) {
 				throw new Error(`La mesa con id ${body.table_id} no está disponible.`)
 			}
-
+			console.log(body)
 			const reservation = await db.reservation.create({
 				data: {
 					reservation_id: body.reservation_id,

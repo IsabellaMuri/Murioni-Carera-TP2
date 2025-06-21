@@ -9,7 +9,6 @@ npm init -y
 npm install prisma @prisma/client
 npx prisma init --datasource-provider sqlite
 
-
 ## Para correr el proyecto
 Para instalar las dependencias
 ```
@@ -32,17 +31,6 @@ Para eliminar la carpeta dist (corte cuando terminas d correr el coso)
 pnpm run clean
 ```
 
-## 🛠️ Comandos
-Comandos basicos de git\
-```
-git add .
-```
-```
-git commit -m "mensaje"
-```
-```
-git push
-```
 Comandos de Prisma
 ```
 pnpm prisma generate

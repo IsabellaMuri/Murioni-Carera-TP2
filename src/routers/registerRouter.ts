@@ -1,6 +1,5 @@
 import { Router, Request, Response } from "express"
 import { userService } from "../services/userService";
-import { jwtAuthMiddleware } from "../middleware/authentication-middleware";
 
 const UserService = new userService();
 
